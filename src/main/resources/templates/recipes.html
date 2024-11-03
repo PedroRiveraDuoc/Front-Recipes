@@ -1,84 +1,81 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <title>Lista de recetas</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body class="bg-gradient-to-b from-gray-200 to-gray-400 bg-fixed h-full text-gray-800">
-    <div class="container mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 class="text-3xl font-bold text-center mb-6">Recetas disponibles</h1>
 
-      <!-- Botón para crear una nueva receta -->
-      <div class="text-right mb-4">
-        <a href="/recipes/new">
-          <button
-            class="bg-green-400 text-white px-4 py-2 rounded-md hover:bg-green-600"
-          >
-            Crear nueva receta
-          </button>
-        </a>
-      </div>
+<head>
+  <title>Lista de recetas</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet" />
+</head>
 
-      <div class="grid gap-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-        <!-- Iterar sobre la lista de recetas -->
-        <div
-          th:each="recipe : ${recipes}"
-          class="bg-white rounded-md overflow-hidden relative shadow-md"
-        >
-          <!-- Mostrar imagen o mensaje de 'no hay imagen disponible' -->
-          <div th:if="${recipe.photos != null and #lists.size(recipe.photos) > 0}">
-            <img
-              th:src="${recipe.photos[0].url}"
-              alt="Imagen de la receta"
-              class="w-full h-48 object-cover"
-            />
-          </div>
-          <div
-            th:if="${recipe.photos == null or #lists.size(recipe.photos) == 0}"
-            class="h-48 bg-gray-200 flex items-center justify-center"
-          >
-            <p class="text-gray-500">No hay imágenes disponibles</p>
-          </div>
+<body class="bg-gradient-to-b from-gray-200 to-gray-400 bg-fixed h-full text-gray-800">
 
-          <!-- Contenido de la receta -->
-          <div class="p-4">
-            <h2
-              class="text-2xl font-bold text-green-400 truncate"
-              th:text="${recipe.title}"
-            >
-              Título receta
-            </h2>
-            <div class="flex justify-between mt-4 mb-4 text-gray-500">
-              <div class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span class="ml-1 lg:text-xl" th:text="${recipe.cookTime} + 'm'">30m</span>
-              </div>
-              <div class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                  <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
-                </svg>
-                <span class="ml-1 lg:text-xl" th:text="${recipe.difficulty.getDisplayName()}">10</span>
-              </div>
+  <!-- Navbar -->
+  <div th:insert="~{fragments/navbar :: navbar}"></div>
+
+  <!-- Contenedor principal -->
+  <div class="container mx-auto p-6 bg-white shadow-lg rounded-lg my-10">
+    <h1 class="text-3xl font-bold text-center mb-6">Recetas disponibles</h1>
+
+    <!-- Botón para crear una nueva receta -->
+    <div class="text-right mb-4">
+      <a href="/recipes/new">
+        <button class="bg-green-400 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors duration-200">
+          Crear nueva receta
+        </button>
+      </a>
+    </div>
+
+    <!-- Grid de recetas -->
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Iteración sobre las recetas -->
+      <div th:each="recipe : ${recipes}" class="bg-white rounded-lg shadow-md overflow-hidden relative">
+        <!-- Imagen de la receta o mensaje de 'no hay imagen' -->
+        <div th:if="${recipe.photos != null and #lists.size(recipe.photos) > 0}">
+          <img th:src="${recipe.photos[0].url}" alt="Imagen de la receta" class="w-full h-48 object-cover" />
+        </div>
+        <div th:if="${recipe.photos == null or #lists.size(recipe.photos) == 0}"
+          class="h-48 bg-gray-200 flex items-center justify-center">
+          <p class="text-gray-500">No hay imágenes disponibles</p>
+        </div>
+
+        <!-- Detalles de la receta -->
+        <div class="p-4">
+          <h2 class="text-2xl font-bold text-green-400 truncate" th:text="${recipe.title}">Título receta</h2>
+          <div class="flex justify-between items-center text-gray-500 mt-4 mb-4">
+            <!-- Tiempo de cocción -->
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="ml-1" th:text="${recipe.cookTime} + 'm'">20m</span>
             </div>
-            <p class="mb-4 text-gray-500" th:text="${recipe.description}">Una receta rápida, fácil y deliciosa!</p>
-            <a
-              th:href="@{/recipes/{id}(id=${recipe.id})}"
-              class="text-white bg-green-400 p-4 rounded-md w-full uppercase block text-center"
-              >Ver detalle</a>
+            <!-- Dificultad -->
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+              </svg>
+              <span class="ml-1" th:text="${recipe.difficulty.getDisplayName()}">Fácil</span>
+            </div>
           </div>
+          <!-- Descripción de la receta -->
+          <p class="mb-4 text-gray-500" th:text="${recipe.description}">Una receta rápida y deliciosa!</p>
+          <!-- Botón de detalle -->
+          <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="text-white bg-green-400 p-4 rounded-md w-full block text-center hover:bg-green-600 transition-colors duration-200 uppercase">
+            Ver detalle
+          </a>
+        </div>
 
-          <!-- Etiqueta de dificultad -->
-          <div class="absolute top-0 right-0 mt-4 mr-4 bg-green-400 text-white rounded-full pt-1 pb-1 pl-4 pr-5 text-xs uppercase">
-            <span th:text="${recipe.difficulty.getDisplayName()}">Media</span>
-          </div>
+        <!-- Etiqueta de dificultad -->
+        <div class="absolute top-0 right-0 mt-4 mr-4 bg-green-400 text-white rounded-full px-3 py-1 text-xs uppercase">
+          <span th:text="${recipe.difficulty.getDisplayName()}">Media</span>
         </div>
       </div>
     </div>
-  </body>
+  </div>
+
+  <!-- Footer -->
+  <div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+
 </html>
