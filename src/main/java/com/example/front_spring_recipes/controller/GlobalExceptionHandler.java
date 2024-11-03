@@ -1,10 +1,15 @@
 package com.example.front_spring_recipes.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.UUID;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -12,11 +17,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleException(Exception ex, Model model) {
-        // Log the detailed exception for internal purposes only
-        ex.printStackTrace(); // Puedes usar un logger aquí
-
-        // Set a generic error message to avoid revealing sensitive info
+        // Generar un ID de error único para el seguimiento sin revelar detalles
+        String errorId = UUID.randomUUID().toString();
         model.addAttribute("error", "Se ha producido un error inesperado. Intente nuevamente más tarde.");
-        return "error"; // Un archivo HTML en templates para mostrar un mensaje de error
+        model.addAttribute("errorId", errorId);
+
+        // Registro del error solo para el equipo de desarrollo
+        ex.printStackTrace(); // Puedes reemplazarlo con un logger de producción
+
+        return "error"; // Enviar a la página de error genérica
+    }
+
+    // Endpoint genérico para cualquier ruta que produzca error
+    @RequestMapping("/error")
+    public ResponseEntity<String> handleError() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.TEXT_HTML)
+                .body("<html><body><h3>Se ha producido un error inesperado.</h3></body></html>");
     }
 }
