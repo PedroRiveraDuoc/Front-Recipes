@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,50 +20,105 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
-    // Endpoint para obtener todas las recetas
+    // Obtener todas las recetas
     @GetMapping
     public String getAllRecipes(Model model) {
-        List<Recipe> recipes = recipeService.getAllRecipes();
-        model.addAttribute("recipes", recipes);
+        model.addAttribute("recipes", recipeService.getAllRecipes());
         return "recipes";
     }
 
-    // Endpoint para obtener una receta por ID
+    // Obtener una receta por ID
     @GetMapping("/{id}")
     public String getRecipeById(@PathVariable Long id, Model model) {
-        Optional<Recipe> recipe = recipeService.getRecipeById(id);
-        if (recipe.isPresent()) {
-            model.addAttribute("recipe", recipe.get());
-            return "recipe_detail"; // Devolver la vista de detalles de la receta
+        Optional<Recipe> recipeOpt = recipeService.getRecipeById(id);
+        if (recipeOpt.isPresent()) {
+            model.addAttribute("recipe", recipeOpt.get());
+            return "recipe_detail";
         } else {
             return "404";
         }
     }
 
-    // Mostrar formulario para crear nueva receta
+    // Mostrar formulario para crear una nueva receta
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("recipe", new Recipe()); // Añadir una receta vacía al modelo
-        return "recipe_form"; // Devuelve la vista del formulario
+        model.addAttribute("recipe", new Recipe());
+        model.addAttribute("isEdit", false);
+        return "recipe_form";
     }
 
-    // Manejar la creación de una nueva receta
+    // Crear una nueva receta
     @PostMapping
-    public String createRecipe(@ModelAttribute("recipe") Recipe recipe,
-            @RequestParam("photoUrl") List<String> photoUrls,
-            @RequestParam("photoDescription") List<String> photoDescriptions) {
+    public String createRecipe(
+            @ModelAttribute("recipe") Recipe recipe,
+            @RequestParam("photoUrl") String photoUrl,
+            @RequestParam("photoDescription") String photoDescription,
+            RedirectAttributes redirectAttributes) {
 
-        // Procesar ingredientes
-        recipe.setIngredients(List.of(recipe.getIngredients().get(0).split(",")));
-
-        // Procesar fotos
-        List<Photo> photos = new ArrayList<>();
-        for (int i = 0; i < photoUrls.size(); i++) {
-            photos.add(new Photo(null, photoUrls.get(i), photoDescriptions.get(i)));
-        }
-        recipe.setPhotos(photos);
+        Photo photo = new Photo();
+        photo.setUrl(photoUrl);
+        photo.setDescription(photoDescription);
+        recipe.setPhoto(photo);
 
         recipeService.addRecipe(recipe);
+        redirectAttributes.addFlashAttribute("successMessage", "Receta creada exitosamente.");
+        return "redirect:/recipes";
+    }
+
+    // Mostrar formulario para editar una receta existente
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Optional<Recipe> recipeOpt = recipeService.getRecipeById(id);
+        if (recipeOpt.isPresent()) {
+            model.addAttribute("recipe", recipeOpt.get());
+            model.addAttribute("isEdit", true);
+            return "recipe_form";
+        } else {
+            return "404";
+        }
+    }
+
+    // Actualizar una receta existente
+    @PostMapping("/edit/{id}")
+    public String updateRecipe(
+            @PathVariable Long id,
+            @ModelAttribute("recipe") Recipe updatedRecipe,
+            @RequestParam("photoUrl") String photoUrl,
+            @RequestParam("photoDescription") String photoDescription,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<Recipe> existingRecipeOpt = recipeService.getRecipeById(id);
+        if (existingRecipeOpt.isPresent()) {
+            Recipe existingRecipe = existingRecipeOpt.get();
+
+            // Actualizar detalles de la receta
+            existingRecipe.setTitle(updatedRecipe.getTitle());
+            existingRecipe.setDescription(updatedRecipe.getDescription());
+            existingRecipe.setCookTime(updatedRecipe.getCookTime());
+            existingRecipe.setIngredients(updatedRecipe.getIngredients());
+            existingRecipe.setInstructions(updatedRecipe.getInstructions());
+            existingRecipe.setDifficulty(updatedRecipe.getDifficulty());
+
+            // Actualizar foto
+            Photo photo = existingRecipe.getPhoto() != null ? existingRecipe.getPhoto() : new Photo();
+            photo.setUrl(photoUrl);
+            photo.setDescription(photoDescription);
+            existingRecipe.setPhoto(photo);
+
+            recipeService.updateRecipe(existingRecipe);
+            redirectAttributes.addFlashAttribute("successMessage", "Receta actualizada exitosamente.");
+            return "redirect:/recipes/" + id;
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Receta no encontrada.");
+            return "redirect:/recipes";
+        }
+    }
+
+    // Eliminar una receta
+    @PostMapping("/delete/{id}")
+    public String deleteRecipe(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        recipeService.deleteRecipe(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Receta eliminada exitosamente.");
         return "redirect:/recipes";
     }
 }

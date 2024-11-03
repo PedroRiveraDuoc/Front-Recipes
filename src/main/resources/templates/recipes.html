@@ -29,11 +29,10 @@
       <!-- Iteración sobre las recetas -->
       <div th:each="recipe : ${recipes}" class="bg-white rounded-lg shadow-md overflow-hidden relative">
         <!-- Imagen de la receta o mensaje de 'no hay imagen' -->
-        <div th:if="${recipe.photos != null and #lists.size(recipe.photos) > 0}">
-          <img th:src="${recipe.photos[0].url}" alt="Imagen de la receta" class="w-full h-48 object-cover" />
+        <div th:if="${recipe.photo != null}">
+          <img th:src="${recipe.photo.url}" alt="Imagen de la receta" class="w-full h-48 object-cover" />
         </div>
-        <div th:if="${recipe.photos == null or #lists.size(recipe.photos) == 0}"
-          class="h-48 bg-gray-200 flex items-center justify-center">
+        <div th:if="${recipe.photo == null}" class="h-48 bg-gray-200 flex items-center justify-center">
           <p class="text-gray-500">No hay imágenes disponibles</p>
         </div>
 

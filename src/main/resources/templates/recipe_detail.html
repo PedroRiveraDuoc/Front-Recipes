@@ -9,22 +9,18 @@
 <body class="bg-gray-100 text-gray-800">
 
   <!-- Navbar -->
-
   <div th:insert="~{fragments/navbar :: navbar}"></div>
-
-
 
   <div class="max-w-6xl mx-auto p-8">
     <div class="bg-white rounded-lg shadow-lg overflow-hidden md:flex">
 
       <!-- Imagen de la receta -->
       <div class="md:w-1/2 h-80 flex items-center justify-center bg-gray-100">
-        <div th:if="${recipe.photos != null and #lists.size(recipe.photos) > 0}" class="w-full h-full">
-          <img th:src="${recipe.photos[0].url}" alt="Recipe Image"
+        <div th:if="${recipe.photo != null}" class="w-full h-full">
+          <img th:src="${recipe.photo.url}" alt="Recipe Image"
             class="w-full h-full object-cover object-center rounded-lg" />
         </div>
-        <div th:if="${recipe.photos == null or #lists.size(recipe.photos) == 0}"
-          class="flex items-center justify-center h-full bg-gray-200">
+        <div th:if="${recipe.photo == null}" class="flex items-center justify-center h-full bg-gray-200">
           <p class="text-gray-500">🚫 No hay imágenes disponibles</p>
         </div>
       </div>
@@ -51,8 +47,25 @@
           </div>
           <div>
             <p class="text-lg font-semibold text-gray-900">🔥 Dificultad:</p>
-            <p class="text-gray-700"><span th:text="${recipe.difficulty}"></span></p>
+            <p class="text-gray-700"><span th:text="${recipe.difficulty.getDisplayName()}"></span></p>
           </div>
+        </div>
+
+        <!-- Botones de Editar y Eliminar -->
+        <div class="flex justify-end space-x-4 mt-6">
+          <!-- Botón Editar -->
+          <a th:href="@{/recipes/edit/{id}(id=${recipe.id})}"
+            class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition-colors">
+            Editar
+          </a>
+
+          <!-- Botón Eliminar (con confirmación) -->
+          <form th:action="@{/recipes/delete/{id}(id=${recipe.id})}" method="post"
+            onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta receta?');">
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors">
+              Eliminar
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -65,7 +78,6 @@
       </a>
     </div>
   </div>
-
 
   <!-- Footer -->
   <div th:insert="~{fragments/footer :: footer}"></div>
