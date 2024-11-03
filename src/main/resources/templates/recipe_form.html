@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Create Recipe</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100 text-gray-800">
+    <div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h1 class="text-3xl font-bold text-center mb-6">Crear nueva receta</h1>
+
+      <form
+        th:action="@{/recipes}"
+        th:object="${recipe}"
+        method="post"
+        class="space-y-4"
+      >
+        <!-- Title -->
+        <div>
+          <label for="title" class="block text-sm font-medium text-gray-700"
+            >Título</label
+          >
+          <input
+            type="text"
+            id="title"
+            th:field="*{title}"
+            placeholder="Recipe Title"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          />
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label
+            for="description"
+            class="block text-sm font-medium text-gray-700"
+            >Descripción</label
+          >
+          <textarea
+            id="description"
+            th:field="*{description}"
+            placeholder="Recipe Description"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          ></textarea>
+        </div>
+
+        <!-- Ingredients -->
+        <div>
+          <label
+            for="ingredients"
+            class="block text-sm font-medium text-gray-700"
+            >Ingredientes</label
+          >
+          <textarea
+            id="ingredients"
+            th:field="*{ingredients}"
+            placeholder="Comma-separated ingredients"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          ></textarea>
+        </div>
+
+        <!-- Instructions -->
+        <div>
+          <label
+            for="instructions"
+            class="block text-sm font-medium text-gray-700"
+            >Instrucciones</label
+          >
+          <textarea
+            id="instructions"
+            th:field="*{instructions}"
+            placeholder="Preparation Instructions"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          ></textarea>
+        </div>
+
+        <!-- Cook Time -->
+        <div>
+          <label for="cookTime" class="block text-sm font-medium text-gray-700"
+            >Tiempo de preparación (en minutos)</label
+          >
+          <input
+            type="number"
+            id="cookTime"
+            th:field="*{cookTime}"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            required
+          />
+        </div>
+
+        <!-- Difficulty -->
+        <div>
+          <label
+            for="difficulty"
+            class="block text-sm font-medium text-gray-700"
+            >Dificultad</label
+          >
+          <select
+            id="difficulty"
+            th:field="*{difficulty}"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            <option value="EASY">Fácil</option>
+            <option value="MEDIUM">Mediana</option>
+            <option value="HARD">Difícil</option>
+          </select>
+        </div>
+
+        <!-- Photos -->
+        <div id="photos-container">
+          <div>
+            <label
+              for="photoUrl1"
+              class="block text-sm font-medium text-gray-700"
+              >Foto URL</label
+            >
+            <input
+              type="text"
+              id="photoUrl1"
+              name="photoUrl"
+              placeholder="Photo URL"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            />
+
+            <label
+              for="photoDescription1"
+              class="block text-sm font-medium text-gray-700 mt-4"
+              >Foto descripción</label
+            >
+            <input
+              type="text"
+              id="photoDescription1"
+              name="photoDescription"
+              placeholder="Photo Description"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+          <button
+            type="submit"
+            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Crear receta
+          </button>
+        </div>
+      </form>
+
+      <div class="text-center mt-4">
+        <a href="/recipes" class="text-blue-500 hover:underline"
+          >Volver a listado de recetas</a
+        >
+      </div>
+    </div>
+  </body>
+</html>

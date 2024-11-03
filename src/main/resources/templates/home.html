@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <title>Recetas - Inicio</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Encabezado -->
+    <nav class="bg-white border-b border-gray-200 dark:bg-gray-900">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <!-- Logo -->
+            <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <img src="/images/logo.png" class="h-12 w-12 rounded-full" alt="Recetas Logo" />
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Recetas</span>
+            </a>
+    
+            <!-- Menú de Navegación -->
+            <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta">
+                <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                    <li>
+                        <a href="/" class="block py-2 px-3 md:p-0 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500" aria-label="Inicio">
+                            Inicio
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/recipes" class="block py-2 px-3 md:p-0 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500" aria-label="Recetas">
+                            Recetas
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="block py-2 px-3 md:p-0 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500" aria-label="Categorías">
+                            Categorías
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="block py-2 px-3 md:p-0 text-gray-900 hover:text-blue-700 dark:text-white dark:hover:text-blue-500" aria-label="Contacto">
+                            Contacto
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+
+
+
+    <!-- Contenido principal -->
+    <main class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-6">Bienvenido a Recetas, Seguridad y Calidad en el
+            Desarrollo!</h1>
+        <p class="text-center text-gray-600 mb-10">Descubre y comparte las mejores recetas de la comunidad.</p>
+
+        <!-- Recetas Destacadas -->
+        <section class="container mx-auto py-10">
+            <h2 class="text-3xl font-bold text-center mb-8">Recetas Destacadas</h2>
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Ejemplo de tarjeta de receta -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="https://example.com/recipe-image.jpg" alt="Receta Destacada"
+                        class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Receta Ejemplo</h3>
+                        <p class="text-gray-600 mt-2">Descripción breve de la receta para captar la atención.</p>
+                        <a href="#" class="text-blue-500 hover:underline mt-4 block">Ver receta</a>
+                    </div>
+                </div>
+                <!-- Repite las tarjetas según sea necesario -->
+            </div>
+        </section>
+
+        <!-- Espacio para patrocinadores -->
+        <section class="bg-blue-100 p-6 rounded-lg text-center">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Patrocinadores</h2>
+            <p class="text-gray-600">Espacio publicitario para nuestros patrocinadores.</p>
+            <p class="text-gray-600 font-semibold mt-2">Banner Comercial</p>
+        </section>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="bg-white rounded-lg shadow dark:bg-gray-900 m-4">
+        <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+            <div class="sm:flex sm:items-center sm:justify-between">
+                <a href="/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                    <img src="/images/logo.png" class="h-12" alt="Recetas Logo" />
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Recetas</span>
+                </a>
+                <ul
+                    class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+                    <li><a href="#" class="hover:underline mr-4 md:mr-6">Sobre Nosotros</a></li>
+                    <li><a href="#" class="hover:underline mr-4 md:mr-6">Política de Privacidad</a></li>
+                    <li><a href="#" class="hover:underline mr-4 md:mr-6">Licencias</a></li>
+                    <li><a href="#" class="hover:underline">Contacto</a></li>
+                </ul>
+            </div>
+            <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+            <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2024 <a href="/"
+                    class="hover:underline">Recetas™</a>. Todos los derechos reservados.</span>
+        </div>
+    </footer>
+</body>
+
+</html>
