@@ -1,6 +1,7 @@
 package com.example.front_spring_recipes.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +9,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -39,5 +42,21 @@ public class WebSecurityConfig {
         .logout(logout -> logout.permitAll());
 
     return http.build();
+  }
+
+  // Configuración explícita para SameSite en cookies de sesión
+  @Bean
+  public CookieSerializer cookieSerializer() {
+    DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
+    cookieSerializer.setCookieName("JSESSIONID");
+    cookieSerializer.setSameSite("Lax"); // Usa "Strict" para mayor seguridad
+    cookieSerializer.setUseSecureCookie(true); // Asegura el uso de HTTPS
+    cookieSerializer.setCookiePath("/"); // Establece la ruta de la cookie
+    return cookieSerializer;
+  }
+
+  @Bean
+  public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
+    return CookieSameSiteSupplier.ofLax();
   }
 }
