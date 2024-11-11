@@ -1,44 +1,75 @@
 package com.example.front_spring_recipes.service;
 
+import com.example.front_spring_recipes.config.TokenStore;
 import com.example.front_spring_recipes.model.Recipe;
-import com.example.front_spring_recipes.repository.RecipeRepository;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RecipeService {
 
     @Autowired
-    private RecipeRepository recipeRepository;
+    private TokenStore tokenStore;
 
-    // Obtener todas las recetas
-    public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();
-    }
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final String baseUrl = "http://localhost:8081/api/recipes";
 
-    // Obtener una receta por su ID
-    public Optional<Recipe> getRecipeById(Long id) {
-        return recipeRepository.findById(id);
-    }
+    private HttpHeaders createHeaders(boolean requireAuth) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-    // Crear una nueva receta
-    public Recipe addRecipe(Recipe recipe) {
-        return recipeRepository.save(recipe);
-    }
-
-    // Actualizar una receta existente
-    public void updateRecipe(Recipe recipe) {
-        recipeRepository.save(recipe);
-    }
-
-    // Eliminar una receta por su ID
-    public void deleteRecipe(Long id) {
-        if (!recipeRepository.existsById(id)) {
-            throw new IllegalArgumentException("Recipe with ID " + id + " does not exist.");
+        if (requireAuth) {
+            String rawTokenObject = tokenStore.getToken();
+            if (rawTokenObject == null || rawTokenObject.isEmpty()) {
+                throw new IllegalStateException("Token no disponible. El usuario debe autenticarse.");
+            }
+            String token = new JSONObject(rawTokenObject).getString("token");
+            headers.set("Authorization", "Bearer " + token);
         }
-        recipeRepository.deleteById(id);
+
+        return headers;
+    }
+
+    // Obtener todas las recetas (público)
+    public List<Recipe> getRecipes() {
+        HttpEntity<String> entity = new HttpEntity<>(createHeaders(false));
+        ResponseEntity<Recipe[]> response = restTemplate.exchange(baseUrl, HttpMethod.GET, entity, Recipe[].class);
+        return Arrays.asList(response.getBody());
+    }
+
+    // Obtener una receta por su ID (requiere autenticación)
+    public Recipe getRecipeById(Long id) {
+        String url = baseUrl + "/" + id;
+        HttpEntity<String> entity = new HttpEntity<>(createHeaders(true));
+        ResponseEntity<Recipe> response = restTemplate.exchange(url, HttpMethod.GET, entity, Recipe.class);
+        return response.getBody();
+    }
+
+    // Crear una nueva receta (requiere autenticación)
+    public Recipe addRecipe(Recipe recipe) {
+        HttpEntity<Recipe> entity = new HttpEntity<>(recipe, createHeaders(true));
+        ResponseEntity<Recipe> response = restTemplate.exchange(baseUrl, HttpMethod.POST, entity, Recipe.class);
+        return response.getBody();
+    }
+
+    // Actualizar una receta existente (requiere autenticación)
+    public Recipe updateRecipe(Long id, Recipe recipe) {
+        String url = baseUrl + "/" + id;
+        HttpEntity<Recipe> entity = new HttpEntity<>(recipe, createHeaders(true));
+        ResponseEntity<Recipe> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Recipe.class);
+        return response.getBody();
+    }
+
+    // Eliminar una receta por su ID (requiere autenticación)
+    public void deleteRecipe(Long id) {
+        String url = baseUrl + "/" + id;
+        HttpEntity<String> entity = new HttpEntity<>(createHeaders(true));
+        restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
     }
 }
