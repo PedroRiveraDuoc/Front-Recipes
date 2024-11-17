@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Inicio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body
+    class="bg-gradient-to-b from-green-200 to-green-400 bg-fixed h-full text-green-800">
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar :: navbar(username=${username})}"></div>
+
+  <!-- Sección de bienvenida con overlay -->
+  <section class="relative bg-cover bg-center bg-fixed bg-gray-700 bg-blend-multiply"
+    style="background-image: url('/images/background-welcome.jpg');">
+    <!-- Overlay oscuro -->
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+
+    <!-- Contenido de la sección -->
+    <div class="relative px-4 mx-auto max-w-screen-xl text-center py-24 lg:py-56">
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
+        Explora, Cocina y Disfruta las Mejores Recetas
+      </h1>
+      <p class="mb-8 text-lg font-normal text-white lg:text-xl sm:px-16 lg:px-48">
+        Descubre una amplia variedad de recetas deliciosas para cada ocasión. Aprende, cocina y comparte tus platillos
+        favoritos con nuestra comunidad.
+      </p>
+      <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+        <a href="/recipes"
+          class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-white rounded-lg bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300"
+          aria-label="Explorar Recetas">
+          Explorar Recetas
+          <svg class="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M1 5h12m0 0L9 1m4 4L9 9" />
+          </svg>
+        </a>
+        <a href="#"
+          class="inline-flex justify-center items-center py-3 px-5 sm:ml-4 text-base font-medium text-white rounded-lg border border-white hover:bg-white hover:text-gray-900 focus:ring-4 focus:ring-gray-400"
+          aria-label="Más Información">
+          Más Información
+        </a>
+      </div>
+    </div>
+  </section>
+
+<!-- Sección de recetas destacadas -->
+<section class="mt-16 max-w-6xl mx-auto">
+  <h2 class="text-4xl font-bold text-center text-gray-700 mb-12">Recetas Destacadas</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+    <div th:each="receta : ${recetasAleatorias}" class="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
+      <a th:href="@{/recipes/{id}(id=${receta.id})}">
+        <!-- Imagen de la receta -->
+        <div th:if="${receta.photo != null}">
+          <img th:src="${receta.photo.url}" alt="Imagen de la receta" class="w-full h-56 object-cover rounded-t-lg" />
+        </div>
+        <div th:if="${receta.photo == null}" class="h-56 bg-gray-200 flex items-center justify-center rounded-t-lg">
+          <p class="text-gray-500">No hay imágenes disponibles</p>
+        </div>
+      </a>
+      <div class="p-6">
+        <!-- Título de la receta -->
+        <h3 class="text-2xl font-semibold text-green-600 truncate mb-4" th:text="${receta.title}">Nombre de la Receta</h3>
+        <!-- Información de la receta -->
+        <div class="flex justify-between items-center text-gray-600 mb-4">
+          <!-- Tiempo de cocción -->
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="ml-2" th:text="${receta.cookTime + ' min'}">20 min</span>
+          </div>
+          <!-- Dificultad -->
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+              <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" clip-rule="evenodd" />
+            </svg>
+            <span class="ml-2" th:text="${receta.difficulty.getDisplayName()}">Fácil</span>
+          </div>
+        </div>
+        <!-- Descripción de la receta -->
+        <p class="mb-6 text-gray-700" th:text="${receta.description}">Descripción breve de la receta.</p>
+        <!-- Botón de detalle -->
+        <a th:href="@{/recipes/{id}(id=${receta.id})}" class="block text-center py-3 px-4 text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors duration-200">
+          Ver Detalle
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- Sección de patrocinadores -->
+  <section class="bg-blue-100 p-6 rounded-lg text-center mt-10 max-w-4xl mx-auto">
+    <h2 class="text-xl font-semibold text-gray-800 mb-2">Patrocinadores</h2>
+    <p class="text-gray-600">Espacio publicitario para nuestros patrocinadores.</p>
+    <p class="text-gray-600 font-semibold mt-2">Banner Comercial</p>
+  </section>
+
+  <!-- Footer -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>
