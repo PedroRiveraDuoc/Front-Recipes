@@ -1,6 +1,7 @@
 <!-- recipe_form.html -->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+<<<<<<< HEAD
   <head>
     <meta charset="UTF-8" />
     <title th:text="${isEdit} ? 'Editar receta' : 'Nueva receta'">
@@ -176,4 +177,109 @@
     <!-- Footer (si tienes uno) -->
     <div th:insert="~{fragments/footer :: footer}"></div>
   </body>
+=======
+
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${isEdit} ? 'Editar receta' : 'Nueva receta'">Nueva Receta 🥣</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body
+    class="bg-gradient-to-b from-green-200 to-green-400 bg-fixed h-full text-green-800">
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar :: navbar(username=${username})}"></div>
+
+  <!-- Main Container -->
+  <div class="max-w-2xl mx-auto p-8 bg-white shadow-md rounded-lg mt-12">
+    <h1 class="text-2xl font-semibold text-center mb-8" th:text="${isEdit} ? 'Editar receta' : 'Nueva receta'"></h1>
+
+    <!-- Formulario -->
+    <form th:action="${isEdit} ? @{'/recipes/edit/' + ${recipe.id}} : @{/recipes}" th:object="${recipe}" method="post" class="space-y-6">
+      
+      <!-- Título -->
+      <h2 class="text-lg font-medium mt-8 mb-4">Título</h2>
+      <div>
+        <input type="text" id="title" th:field="*{title}" placeholder="Título de la receta"
+          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" required />
+      </div>
+
+      <!-- Descripción -->
+      <div>
+        <textarea id="description" th:field="*{description}" placeholder="Descripción de la receta"
+          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" required></textarea>
+      </div>
+
+      <h2 class="text-lg font-medium mt-8 mb-4">Ingredientes</h2>
+      <!-- Ingredientes -->
+      <div>
+        <textarea id="ingredients" th:field="*{ingredients}" placeholder="Ingredientes separados por comas (Ej: Pollo, Arroz, Sal)"
+          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" required></textarea>
+      </div>
+
+      <!-- Instrucciones -->
+      <h2 class="text-lg font-medium mt-8 mb-4">Instrucciones</h2>
+      <div>
+        <textarea id="instructions" th:field="*{instructions}" placeholder="Instrucciones de preparación"
+          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" required></textarea>
+      </div>
+
+      <!-- Tiempo de preparación -->
+      <h2 class="text-lg font-medium mt-8 mb-4">Tiempo de preparación</h2>
+      <div>
+        <input type="number" id="cookTime" th:field="*{cookTime}" placeholder="Tiempo de preparación (minutos)"
+          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" required />
+      </div>
+
+      <!-- Dificultad -->
+      <h2 class="text-lg font-medium mt-8 mb-4">Dificultad</h2>
+      <div>
+        <select id="difficulty" th:field="*{difficulty}"
+          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400">
+          <option value="EASY">Fácil</option>
+          <option value="MEDIUM">Mediana</option>
+          <option value="HARD">Difícil</option>
+        </select>
+      </div>
+
+      <!-- Foto -->
+      <h2 class="text-lg font-medium mt-8 mb-4">Foto</h2>
+      <div>
+        <input type="text" id="photoUrl" name="photoUrl" th:value="${recipe.photo != null} ? ${recipe.photo.url} : ''"
+          placeholder="URL de la foto"
+          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" />
+
+        <input type="text" id="photoDescription" name="photoDescription"
+          th:value="${recipe.photo != null} ? ${recipe.photo.description} : ''" placeholder="Descripción de la foto"
+          class="w-full px-4 py-2 mt-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" />
+      </div>
+
+      <!-- Video -->
+      <h2 class="text-lg font-medium mt-8 mb-4">Video</h2>
+      <div>
+        <input type="text" id="videoUrl" name="videoUrl" placeholder="URL del video"
+          class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" />
+
+        <input type="text" id="videoDescription" name="videoDescription" placeholder="Descripción del video"
+          class="w-full px-4 py-2 mt-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" />
+      </div>
+
+      <!-- Botón de enviar -->
+      <div class="text-center mt-8">
+        <button type="submit" th:text="${isEdit} ? 'Actualizar receta 🟡' : 'Crear receta ✅'"
+          class="w-full py-3 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400"></button>
+      </div>
+    </form>
+
+    <!-- Link de volver -->
+    <div class="text-center mt-6">
+      <a href="/recipes" class="text-green-500 hover:underline">Volver a listado de recetas</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+
+>>>>>>> master
 </html>

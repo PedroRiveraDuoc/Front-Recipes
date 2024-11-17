@@ -11,6 +11,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
+<<<<<<< HEAD
+=======
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.ui.Model;
+
+
+>>>>>>> master
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -32,7 +42,19 @@ public class WebSecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(requests -> requests
+<<<<<<< HEAD
             .requestMatchers("/", "/**.css", "/login", "/home").permitAll()
+=======
+            .requestMatchers(
+              "/",
+              "/**.css", 
+              "/login", 
+              "/home",
+              "/static/**", 
+              "/js/**", 
+              "/images/**"
+              ).permitAll()
+>>>>>>> master
             .anyRequest().authenticated())
         .formLogin(form -> form
             .loginPage("/login")
@@ -59,4 +81,20 @@ public class WebSecurityConfig {
   public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
     return CookieSameSiteSupplier.ofLax();
   }
+<<<<<<< HEAD
+=======
+
+
+  @ControllerAdvice
+public class GlobalModelAttribute {
+
+    @ModelAttribute
+    public void addUsernameToModel(Model model, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            model.addAttribute("username", username);
+        }
+    }
+}
+>>>>>>> master
 }
