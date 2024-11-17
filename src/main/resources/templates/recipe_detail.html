@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Detalle de la receta</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gradient-to-b from-green-200 to-green-400 bg-fixed h-full text-green-800">
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar :: navbar(username=${username})}"></div>
+
+  <!-- Contenedor principal -->
+  <div class="max-w-4xl mx-auto p-8">
+    <!-- Card de la receta -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+      <!-- Imagen de la receta -->
+      <div class="w-full h-64">
+        <div th:if="${recipe.photo != null}" class="h-full">
+          <img th:src="${recipe.photo.url}" alt="Recipe Image" class="w-full h-full object-cover rounded-t-lg" />
+        </div>
+        <div th:if="${recipe.photo == null}" class="flex items-center justify-center h-full bg-gray-200">
+          <p class="text-gray-500">🚫 No hay imágenes disponibles</p>
+        </div>
+      </div>
+
+      <!-- Información de la receta -->
+      <div class="p-8">
+        <!-- Título de la receta -->
+        <h1 class="text-4xl font-bold text-center text-gray-900 mb-6" th:text="${recipe.title}">🍲 Título de la Receta
+        </h1>
+        <p class="text-lg text-center text-gray-700 mb-4" th:text="${recipe.description}">Descripción de la receta</p>
+
+        <!-- Ingredientes -->
+        <div class="mb-8">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4 text-center">🥕 Ingredientes</h2>
+          <div class="bg-gray-50 p-4 rounded-lg shadow-md">
+            <ul class="list-disc pl-5 text-gray-700 space-y-2">
+              <li th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient}"></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Instrucciones -->
+        <div class="mb-8">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4 text-center">📜 Instrucciones</h2>
+          <div class="bg-gray-50 p-4 rounded-lg shadow-md">
+            <ol class="list-decimal pl-5 text-gray-700 space-y-3">
+              <li th:each="instruction : ${recipe.instructions.split(';')}" th:text="${instruction}"></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center mb-8">
+          <div class="bg-gray-50 p-4 rounded-lg shadow-md">
+            <p class="text-lg font-semibold text-gray-900">⏱️ Tiempo de preparación</p>
+            <p class="text-gray-700 text-xl font-bold"><span th:text="${recipe.cookTime}"></span> minutos</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg shadow-md">
+            <p class="text-lg font-semibold text-gray-900">🔥 Dificultad</p>
+            <p class="text-gray-700 text-xl font-bold"><span th:text="${recipe.difficulty.getDisplayName()}"></span></p>
+          </div>
+        </div>
+        <!-- Botones de Editar y Eliminar -->
+        <div class="flex justify-end space-x-4 mt-6">
+          <!-- Botón Editar -->
+          <a th:href="@{/recipes/edit/{id}(id=${recipe.id})}"
+            class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition-colors">
+            Editar
+          </a>
+
+          <!-- Botón Eliminar (con confirmación) -->
+          <form th:action="@{/recipes/delete/{id}(id=${recipe.id})}" method="post"
+            onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta receta?');">
+            <button type="submit"
+              class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors">
+              Eliminar
+            </button>
+          </form>
+        </div>
+
+        <!-- Separador -->
+        <div class="flex items-center mb-12 mt-20">
+          <div class="flex-grow border-t border-gray-300"></div>
+          <span class="mx-4 text-gray-500">Si te gustó, Deja tu comentario 📝</span>
+          <div class="flex-grow border-t border-gray-300"></div>
+        </div>
+
+        <!-- Formulario de comentarios -->
+        <div class="mb-6 text-center">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">💬 Agregar Comentario:</h2>
+          <input id="user-name" class="w-full p-2 mb-4 border rounded-lg" type="text"
+            placeholder="Tu nombre (opcional)" />
+          <textarea id="comment-input" class="w-full p-2 border rounded-lg mb-4"
+            placeholder="Escribe tu comentario aquí..."></textarea>
+
+          <!-- Calificación con estrellas -->
+          <div class="mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">⭐ Calificación:</h2>
+            <div id="rating" class="flex justify-center space-x-1">
+              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
+              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
+              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
+              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
+              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
+            </div>
+          </div>
+
+          <button id="add-comment" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Agregar
+            Comentario</button>
+        </div>
+
+        <!-- Lista de comentarios -->
+        <div id="comments-list" class="space-y-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">📃 Comentarios:</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón para volver -->
+    <div class="text-center mt-10">
+      <a href="/recipes" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700">Volver a listado de
+        recetas</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div th:insert="~{fragments/footer :: footer}"></div>
+
+  <!-- JavaScript para interactividad -->
+  <script>
+    const stars = document.querySelectorAll('.star');
+    const commentInput = document.getElementById('comment-input');
+    const userNameInput = document.getElementById('user-name');
+    const addCommentButton = document.getElementById('add-comment');
+    const commentsList = document.getElementById('comments-list');
+    let selectedRating = 0;
+
+    // Manejar la calificación por estrellas
+    stars.forEach((star, index) => {
+      star.addEventListener('click', () => {
+        selectedRating = index + 1;
+        updateStarRating(selectedRating);
+      });
+    });
+
+    // Actualizar visualización de las estrellas
+    function updateStarRating(rating) {
+      stars.forEach((star, index) => {
+        star.classList.toggle('text-yellow-400', index < rating);
+        star.classList.toggle('text-gray-400', index >= rating);
+      });
+    }
+
+    // Manejar la adición de un comentario
+    addCommentButton.addEventListener('click', () => {
+      const commentText = commentInput.value.trim();
+      const userName = userNameInput.value.trim() || 'Usuario Anónimo';
+      const currentDate = new Date().toLocaleString();
+
+      if (commentText && selectedRating > 0) {
+        addComment(userName, commentText, selectedRating, currentDate);
+        commentInput.value = '';
+        userNameInput.value = '';
+        updateStarRating(0);
+        selectedRating = 0;
+      } else {
+        alert('Por favor, agrega una calificación y un comentario.');
+      }
+    });
+
+    // Función para agregar un comentario
+    function addComment(name, text, rating, date) {
+      const commentItem = document.createElement('div');
+      commentItem.classList.add('p-4', 'bg-white', 'rounded-lg', 'shadow');
+      commentItem.innerHTML = `
+        <div class="flex items-center mb-4">
+          <img class="w-10 h-10 rounded-full" src="/images/profile.png" alt="Foto de perfil">
+          <div class="ml-4">
+            <p class="font-medium text-gray-900">${name}</p>
+            <time class="block text-sm text-gray-500">${date}</time>
+          </div>
+        </div>
+        <div class="flex items-center mb-2">
+          <span class="text-yellow-400 mr-2">${'★'.repeat(rating)}</span>
+          <span class="text-gray-400">${'★'.repeat(5 - rating)}</span>
+        </div>
+        <p class="text-gray-700">${text}</p>
+      `;
+      commentsList.appendChild(commentItem);
+    }
+  </script>
+</body>
+
+</html>

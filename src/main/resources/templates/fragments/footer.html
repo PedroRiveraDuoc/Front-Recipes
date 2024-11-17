@@ -1,0 +1,27 @@
+
+<footer th:fragment="footer" class="bg-white rounded-lg shadow mt-8 dark:bg-gray-800">
+    <div class="w-full max-w-screen-xl mx-auto p-6 md:py-8">
+        <!-- Navegación en el footer -->
+        <div class="flex flex-col items-center sm:flex-row sm:justify-between">
+            <ul class="flex space-x-6 text-sm font-medium text-gray-500 dark:text-gray-400 mb-4 sm:mb-0">
+                <li><a href="#" class="hover:underline">Política de Privacidad</a></li>
+                <li><a href="#" class="hover:underline">Licencia</a></li>
+                <li><a href="#" class="hover:underline">Contacto</a></li>
+            </ul>
+        </div>
+
+        <!-- Separador -->
+        <hr class="my-6 border-gray-200 dark:border-gray-700" />
+
+        <!-- Información de derechos reservados y logo -->
+        <div class="flex flex-col items-center space-y-4 sm:flex-row sm:justify-between sm:space-y-0">
+            <a href="/home" class="flex items-center space-x-3">
+                <img src="/images/logo.png" class="h-10 w-10 rounded-full" alt="Recetas Logo" />
+                <span class="text-2xl font-semibold text-gray-800 dark:text-white">Recetas</span>
+            </a>
+            <span class="text-sm text-gray-500 dark:text-gray-400 text-center sm:text-right">
+                © 2024 Recetas. Todos los derechos reservados.
+            </span>
+        </div>
+    </div>
+</footer>
