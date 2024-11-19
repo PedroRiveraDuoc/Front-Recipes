@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
     }
 
     // Endpoint genérico para cualquier ruta que produzca error
-    @RequestMapping("/error")
+    @RequestMapping(value = "/error", method = RequestMethod.GET)
     public ResponseEntity<String> handleError() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(MediaType.TEXT_HTML)
