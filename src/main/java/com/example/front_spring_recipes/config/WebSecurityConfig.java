@@ -1,6 +1,5 @@
 package com.example.front_spring_recipes.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
@@ -23,68 +23,71 @@ import org.springframework.ui.Model;
 @EnableWebSecurity(debug = true)
 public class WebSecurityConfig {
 
-  @Autowired
-  private CustomAuthenticationProvider authProvider;
+    private static final String LOGIN_URL = "/login"; // Definir constante para "/login"
 
-  @Bean
-  public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-    AuthenticationManagerBuilder authenticationManagerBuilder = http
-        .getSharedObject(AuthenticationManagerBuilder.class);
-    authenticationManagerBuilder.authenticationProvider(authProvider);
-    return authenticationManagerBuilder.build();
-  }
+    private final CustomAuthenticationProvider authProvider;
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(requests -> requests
-            .requestMatchers(
-              "/",
-              "/**.css", 
-              "/login", 
-              "/home",
-              "/static/**", 
-              "/js/**", 
-              "/images/**"
-              ).permitAll()
-            .anyRequest().authenticated())
-        .formLogin(form -> form
-            .loginPage("/login")
-            .loginProcessingUrl("/login")
-            .defaultSuccessUrl("/home")
-            .permitAll())
-        .logout(logout -> logout.permitAll());
+    // Inyección mediante constructor
+    public WebSecurityConfig(CustomAuthenticationProvider authProvider) {
+        this.authProvider = authProvider;
+    }
 
-    return http.build();
-  }
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = http
+            .getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(authProvider);
+        return authenticationManagerBuilder.build();
+    }
 
-  // Configuración explícita para SameSite en cookies de sesión
-  @Bean
-  public CookieSerializer cookieSerializer() {
-    DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
-    cookieSerializer.setCookieName("JSESSIONID");
-    cookieSerializer.setSameSite("Lax"); // Usa "Strict" para mayor seguridad
-    cookieSerializer.setUseSecureCookie(true); // Asegura el uso de HTTPS
-    cookieSerializer.setCookiePath("/"); // Establece la ruta de la cookie
-    return cookieSerializer;
-  }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(requests -> requests
+                .requestMatchers(
+                    "/",
+                    "/**.css", 
+                    LOGIN_URL, // Usar constante
+                    "/home",
+                    "/static/**", 
+                    "/js/**", 
+                    "/images/**"
+                ).permitAll()
+                .anyRequest().authenticated())
+            .formLogin(form -> form
+                .loginPage(LOGIN_URL) // Usar constante
+                .loginProcessingUrl(LOGIN_URL) // Usar constante
+                .defaultSuccessUrl("/home")
+                .permitAll())
+            .logout(LogoutConfigurer::permitAll);
 
-  @Bean
-  public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
-    return CookieSameSiteSupplier.ofLax();
-  }
+        return http.build();
+    }
 
+    @Bean
+    public CookieSerializer cookieSerializer() {
+        DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
+        cookieSerializer.setCookieName("JSESSIONID");
+        cookieSerializer.setSameSite("Lax"); 
+        cookieSerializer.setUseSecureCookie(true); 
+        cookieSerializer.setCookiePath("/");
+        return cookieSerializer;
+    }
 
-  @ControllerAdvice
-public class GlobalModelAttribute {
+    @Bean
+    public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofLax();
+    }
 
-    @ModelAttribute
-    public void addUsernameToModel(Model model, Authentication authentication) {
-        if (authentication != null && authentication.isAuthenticated()) {
-            String username = authentication.getName();
-            model.addAttribute("username", username);
+    @ControllerAdvice
+    public class GlobalModelAttribute {
+        @ModelAttribute
+        public void addUsernameToModel(Model model, Authentication authentication) {
+            if (authentication != null && authentication.isAuthenticated()) {
+                String username = authentication.getName();
+                model.addAttribute("username", username);
+            }
         }
     }
-}
 }

@@ -15,18 +15,20 @@ import java.util.UUID;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String ERROR_ATTRIBUTE = "error"; // Definir constante para "error"
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleException(Exception ex, Model model) {
         // Generar un ID de error único para el seguimiento sin revelar detalles
         String errorId = UUID.randomUUID().toString();
-        model.addAttribute("error", "Se ha producido un error inesperado. Intente nuevamente más tarde.");
+        model.addAttribute(ERROR_ATTRIBUTE, "Se ha producido un error inesperado. Intente nuevamente más tarde.");
         model.addAttribute("errorId", errorId);
 
         // Registro del error solo para el equipo de desarrollo
         ex.printStackTrace(); // Puedes reemplazarlo con un logger de producción
 
-        return "error"; // Enviar a la página de error genérica
+        return ERROR_ATTRIBUTE; // Enviar a la página de error genérica
     }
 
     // Endpoint genérico para cualquier ruta que produzca error
@@ -40,8 +42,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleMissingResource(Exception ex, Model model) {
-        model.addAttribute("error", "Resource not found.");
-        return "error"; // Return a user-friendly error page
+        model.addAttribute(ERROR_ATTRIBUTE, "Resource not found.");
+        return ERROR_ATTRIBUTE; // Return a user-friendly error page
     }
 
 }

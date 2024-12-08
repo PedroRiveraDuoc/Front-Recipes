@@ -4,7 +4,6 @@ import com.example.front_spring_recipes.dto.CommentDto;
 import com.example.front_spring_recipes.model.Photo;
 import com.example.front_spring_recipes.model.Recipe;
 import com.example.front_spring_recipes.service.RecipeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +13,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/recipes")
 public class RecipeController {
 
-    @Autowired
-    private RecipeService recipeService;
+    private static final String RECIPE_ATTRIBUTE = "recipe"; // Constante para "recipe"
+    private static final String SUCCESS_MESSAGE_ATTRIBUTE = "successMessage"; // Constante para "successMessage"
+
+    private final RecipeService recipeService;
+
+    // Inyección por constructor
+    public RecipeController(RecipeService recipeService) {
+        this.recipeService = recipeService;
+    }
 
     @GetMapping
     public String getAllRecipes(Model model) {
@@ -25,20 +31,20 @@ public class RecipeController {
 
     @GetMapping("/{id}")
     public String getRecipeById(@PathVariable Long id, Model model) {
-        model.addAttribute("recipe", recipeService.getRecipeById(id));
+        model.addAttribute(RECIPE_ATTRIBUTE, recipeService.getRecipeById(id)); // Usar constante
         return "recipe_detail";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("recipe", new Recipe());
+        model.addAttribute(RECIPE_ATTRIBUTE, new Recipe()); // Usar constante
         model.addAttribute("isEdit", false);
         return "recipe_form";
     }
 
     @PostMapping
     public String createRecipe(
-            @ModelAttribute("recipe") Recipe recipe,
+            @ModelAttribute(RECIPE_ATTRIBUTE) Recipe recipe, // Usar constante
             @RequestParam("photoUrl") String photoUrl,
             @RequestParam("photoDescription") String photoDescription,
             RedirectAttributes redirectAttributes) {
@@ -49,13 +55,13 @@ public class RecipeController {
         recipe.setPhoto(photo);
 
         recipeService.addRecipe(recipe);
-        redirectAttributes.addFlashAttribute("successMessage", "Receta creada exitosamente.");
+        redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE_ATTRIBUTE, "Receta creada exitosamente."); // Usar constante
         return "redirect:/recipes";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("recipe", recipeService.getRecipeById(id));
+        model.addAttribute(RECIPE_ATTRIBUTE, recipeService.getRecipeById(id)); // Usar constante
         model.addAttribute("isEdit", true);
         return "recipe_form";
     }
@@ -63,7 +69,7 @@ public class RecipeController {
     @PostMapping("/edit/{id}")
     public String updateRecipe(
             @PathVariable Long id,
-            @ModelAttribute("recipe") Recipe updatedRecipe,
+            @ModelAttribute(RECIPE_ATTRIBUTE) Recipe updatedRecipe, // Usar constante
             @RequestParam("photoUrl") String photoUrl,
             @RequestParam("photoDescription") String photoDescription,
             RedirectAttributes redirectAttributes) {
@@ -74,14 +80,14 @@ public class RecipeController {
         updatedRecipe.setPhoto(photo);
 
         recipeService.updateRecipe(id, updatedRecipe);
-        redirectAttributes.addFlashAttribute("successMessage", "Receta actualizada exitosamente.");
+        redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE_ATTRIBUTE, "Receta actualizada exitosamente."); // Usar constante
         return "redirect:/recipes/" + id;
     }
 
     @PostMapping("/delete/{id}")
     public String deleteRecipe(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         recipeService.deleteRecipe(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Receta eliminada exitosamente.");
+        redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE_ATTRIBUTE, "Receta eliminada exitosamente."); // Usar constante
         return "redirect:/recipes";
     }
 
@@ -91,10 +97,7 @@ public class RecipeController {
         CommentDto comment = new CommentDto();
         comment.setContent(content);
         recipeService.createCommentByRecipeId(id, comment);
-        redirectAttributes.addFlashAttribute("successMessage", "Comentario agregado exitosamente.");
+        redirectAttributes.addFlashAttribute(SUCCESS_MESSAGE_ATTRIBUTE, "Comentario agregado exitosamente."); // Usar constante
         return "redirect:/recipes/" + id;
     }
-
-    
-
 }

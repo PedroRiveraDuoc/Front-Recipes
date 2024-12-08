@@ -3,7 +3,6 @@ package com.example.front_spring_recipes.controller;
 import com.example.front_spring_recipes.config.TokenStore;
 import com.example.front_spring_recipes.model.Recipe;
 import com.example.front_spring_recipes.service.RecipeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,10 +15,15 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-    private TokenStore tokenStore;
 
-    @Autowired
-    private RecipeService recipeService;
+    private final TokenStore tokenStore;
+    private final RecipeService recipeService;
+
+    // Inyección de dependencias por constructor
+    public HomeController(TokenStore tokenStore, RecipeService recipeService) {
+        this.tokenStore = tokenStore;
+        this.recipeService = recipeService;
+    }
 
     @GetMapping("/")
     public RedirectView redirectToHome() {
@@ -44,6 +48,7 @@ public class HomeController {
         model.addAttribute("recetasAleatorias", recetasAleatorias);
         model.addAttribute("username", authenticatedUserName);
 
+        // Loggear el nombre de usuario autenticado
         System.out.println("Usuario autenticado: " + authenticatedUserName);
 
         return "home";
@@ -53,5 +58,4 @@ public class HomeController {
     public String login() {
         return "login"; // Asegúrate de que este nombre coincide con el archivo login.html en templates
     }
-
 }

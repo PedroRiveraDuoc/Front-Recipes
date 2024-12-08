@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,11 +20,14 @@ import com.example.front_spring_recipes.model.Recipe;
 @Service
 public class RecipeService {
 
-    @Autowired
-    private TokenStore tokenStore;
-
+    private final TokenStore tokenStore;
     private final RestTemplate restTemplate = new RestTemplate();
     private final String baseUrl = "http://localhost:8081/api/recipes";
+
+    // Inyección por constructor
+    public RecipeService(TokenStore tokenStore) {
+        this.tokenStore = tokenStore;
+    }
 
     private HttpHeaders createHeaders(boolean requireAuth) {
         HttpHeaders headers = new HttpHeaders();
@@ -88,12 +90,10 @@ public class RecipeService {
     }
 
     public void addRating(Long recipeId, int ratingValue) {
-    String url = baseUrl + "/" + recipeId + "/ratings";
-    Rating rating = new Rating();
-    rating.setValue(ratingValue);
-    HttpEntity<Rating> entity = new HttpEntity<>(rating, createHeaders(true));
-    restTemplate.postForEntity(url, entity, Rating.class);
-}
-
-
+        String url = baseUrl + "/" + recipeId + "/ratings";
+        Rating rating = new Rating();
+        rating.setValue(ratingValue);
+        HttpEntity<Rating> entity = new HttpEntity<>(rating, createHeaders(true));
+        restTemplate.postForEntity(url, entity, Rating.class);
+    }
 }
