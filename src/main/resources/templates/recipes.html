@@ -122,6 +122,14 @@
           >
             <span th:text="${recipe.difficulty.getDisplayName()}">Media</span>
           </div>
+
+
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927C9.429 1.56 10.571 1.56 10.951 2.927L12.032 6.09H15.454C16.927 6.09 17.253 7.505 16.113 8.243L13.743 9.748L14.824 12.911C15.204 14.278 13.796 15.495 12.655 14.757L10.285 13.252L7.915 14.757C6.774 15.495 5.366 14.278 5.746 12.911L6.827 9.748L4.457 8.243C3.317 7.505 3.643 6.09 5.116 6.09H8.538L9.619 2.927Z" />
+            </svg>
+            <span class="ml-2" th:text="${receta.averageRating} + ' / 5'">0 / 5</span>
+        </div>
         </div>
       </div>
     </div>

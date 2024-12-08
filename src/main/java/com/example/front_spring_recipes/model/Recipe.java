@@ -1,9 +1,10 @@
 package com.example.front_spring_recipes.model;
 
 import jakarta.persistence.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity // Asegurarse de que esté anotada como entidad para JPA
 public class Recipe {
 
     @Id
@@ -28,7 +29,11 @@ public class Recipe {
     @JoinColumn(name = "photo_id", referencedColumnName = "id")
     private Photo photo;
 
-    private List<Comment> comments;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Rating> ratings = new ArrayList<>();
 
     // Getters y setters
     public Long getId() {
@@ -95,14 +100,26 @@ public class Recipe {
         this.photo = photo;
     }
 
-
-
-    // Getters y setters para 'comments'
     public List<Comment> getComments() {
         return comments;
     }
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
+    // Método para calcular el promedio de calificaciones
+    public Double getAverageRating() {
+        return (ratings != null && !ratings.isEmpty())
+            ? ratings.stream().mapToInt(Rating::getValue).average().orElse(0.0)
+            : 0.0;
     }
 }

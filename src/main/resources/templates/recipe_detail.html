@@ -81,51 +81,87 @@
           </form>
         </div>
 
+
+
+
+
+
+<!-- Formulario para agregar comentarios -->
+<div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+  <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b pb-2 flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    Añadir un comentario
+  </h2>
+  <form th:action="@{/recipes/{id}/comments(id=${recipe.id})}" method="post" class="space-y-4">
+    <textarea
+      name="content"
+      rows="4"
+      placeholder="Escribe tu comentario aquí..."
+      class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none"
+      aria-label="Añadir comentario"
+    ></textarea>
+    <div class="text-right">
+      <button
+        type="submit"
+        class="bg-green-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-green-700 transition duration-300 flex items-center gap-2 justify-center"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Publicar comentario
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Lista de comentarios -->
+<div class="mt-12 bg-white p-6 rounded-lg shadow-md">
+  <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b pb-2 flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5m7-4h2m4 0h2m-6-6h2m4 0h2m-6-6h2m4 0h2" />
+    </svg>
+    Comentarios
+  </h2>
+  <div th:if="${recipe.comments != null}" class="space-y-4">
+    <div
+      th:each="comment : ${recipe.comments}"
+      class="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 flex items-start gap-4"
+    >
+      <!-- Icono del perfil -->
+      <div class="flex-shrink-0">
+        <div class="h-12 w-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">
+          <span th:text="${comment.username.substring(0, 1).toUpperCase()}">U</span>
+        </div>
+      </div>
+      <!-- Contenido del comentario -->
+      <div>
+        <p class="text-gray-900 font-medium flex items-center gap-2">
+          <span th:text="${comment.username}">Usuario</span>
+        </p>
+        <p class="text-gray-700 mt-2" th:text="${comment.content}">Contenido del comentario</p>
+        <p class="text-sm text-gray-500 mt-2 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-8 4h4m-4 4h8M5 7v10m14-10v10" />
+          </svg>
+          Publicado el: <span th:text="${comment.createdAt}">Fecha</span>
+        </p>
       </div>
     </div>
   </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!-- Formulario para agregar comentarios -->
-  <div class="mt-8">
-    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Añadir un comentario</h2>
-    <form th:action="@{/recipes/{id}/comments(id=${recipe.id})}" method="post" class="space-y-4">
-      <textarea name="content" rows="4" placeholder="Escribe tu comentario aquí..."
-        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
-      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
-        Publicar comentario
-      </button>
-    </form>
+  <div th:if="${recipe.comments == null}" class="text-gray-500 text-center py-4">
+    No hay comentarios todavía.
   </div>
+</div>
 
-  <!-- Lista de comentarios -->
-  <div class="mt-12">
-    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Comentarios</h2>
-    <div th:if="${recipe.comments != null}">
-      <div th:each="comment : ${recipe.comments}" class="bg-gray-50 p-4 rounded-lg shadow-md mb-4">
-          <p class="text-gray-700"><strong th:text="${comment.username}">Usuario</strong>: 
-              <span th:text="${comment.content}">Contenido del comentario</span></p>
-          <p class="text-sm text-gray-500" th:text="${comment.createdAt}">Fecha</p>
+
+
+
+
       </div>
+    </div>
   </div>
-  <div th:if="${recipe.comments == null}" class="text-gray-500">No hay comentarios todavía.</div>
-  </div>
-
-
-
-
 
 
 
@@ -143,6 +179,7 @@
   </div>
   </div>
 
+  <script src="/js/rating.js"></script>
   <!-- Footer -->
   <div th:insert="~{fragments/footer :: footer}"></div>
 </body>

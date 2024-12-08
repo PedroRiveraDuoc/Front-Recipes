@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.front_spring_recipes.config.TokenStore;
 import com.example.front_spring_recipes.dto.CommentDto;
+import com.example.front_spring_recipes.model.Rating;
 import com.example.front_spring_recipes.model.Recipe;
 
 @Service
@@ -85,4 +86,14 @@ public class RecipeService {
         ResponseEntity<CommentDto> response = restTemplate.exchange(url, HttpMethod.POST, entity, CommentDto.class);
         return response.getBody();
     }
+
+    public void addRating(Long recipeId, int ratingValue) {
+    String url = baseUrl + "/" + recipeId + "/ratings";
+    Rating rating = new Rating();
+    rating.setValue(ratingValue);
+    HttpEntity<Rating> entity = new HttpEntity<>(rating, createHeaders(true));
+    restTemplate.postForEntity(url, entity, Rating.class);
+}
+
+
 }
