@@ -22,14 +22,16 @@ public class RecipeService {
 
     private final TokenStore tokenStore;
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String baseUrl = "http://localhost:8081/api/recipes";
+
+    // Cambiar "final" a "static final" para indicar que es una constante de clase.
+    private static final String BASE_URL = "http://localhost:8081/api/recipes";
 
     // Inyección por constructor
     public RecipeService(TokenStore tokenStore) {
         this.tokenStore = tokenStore;
     }
 
-    private HttpHeaders createHeaders(boolean requireAuth) {
+    public HttpHeaders createHeaders(boolean requireAuth) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -45,52 +47,48 @@ public class RecipeService {
         return headers;
     }
 
-    // Obtener todas las recetas (público)
+    // Métodos existentes que ahora usan BASE_URL en lugar de baseUrl
     public List<Recipe> getRecipes() {
         HttpEntity<String> entity = new HttpEntity<>(createHeaders(false));
-        ResponseEntity<Recipe[]> response = restTemplate.exchange(baseUrl, HttpMethod.GET, entity, Recipe[].class);
+        ResponseEntity<Recipe[]> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity, Recipe[].class);
         return Arrays.asList(response.getBody());
     }
 
-    // Obtener una receta por su ID (requiere autenticación)
     public Recipe getRecipeById(Long id) {
-        String url = baseUrl + "/" + id;
+        String url = BASE_URL + "/" + id;
         HttpEntity<String> entity = new HttpEntity<>(createHeaders(true));
         ResponseEntity<Recipe> response = restTemplate.exchange(url, HttpMethod.GET, entity, Recipe.class);
         return response.getBody();
     }
 
-    // Crear una nueva receta (requiere autenticación)
     public Recipe addRecipe(Recipe recipe) {
         HttpEntity<Recipe> entity = new HttpEntity<>(recipe, createHeaders(true));
-        ResponseEntity<Recipe> response = restTemplate.exchange(baseUrl, HttpMethod.POST, entity, Recipe.class);
+        ResponseEntity<Recipe> response = restTemplate.exchange(BASE_URL, HttpMethod.POST, entity, Recipe.class);
         return response.getBody();
     }
 
-    // Actualizar una receta existente (requiere autenticación)
     public Recipe updateRecipe(Long id, Recipe recipe) {
-        String url = baseUrl + "/" + id;
+        String url = BASE_URL + "/" + id;
         HttpEntity<Recipe> entity = new HttpEntity<>(recipe, createHeaders(true));
         ResponseEntity<Recipe> response = restTemplate.exchange(url, HttpMethod.PUT, entity, Recipe.class);
         return response.getBody();
     }
 
-    // Eliminar una receta por su ID (requiere autenticación)
     public void deleteRecipe(Long id) {
-        String url = baseUrl + "/" + id;
+        String url = BASE_URL + "/" + id;
         HttpEntity<String> entity = new HttpEntity<>(createHeaders(true));
         restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
     }
 
     public CommentDto createCommentByRecipeId(Long id, CommentDto comment) {
-        String url = baseUrl + "/" + id + "/comments";
+        String url = BASE_URL + "/" + id + "/comments";
         HttpEntity<CommentDto> entity = new HttpEntity<>(comment, createHeaders(true));
         ResponseEntity<CommentDto> response = restTemplate.exchange(url, HttpMethod.POST, entity, CommentDto.class);
         return response.getBody();
     }
 
     public void addRating(Long recipeId, int ratingValue) {
-        String url = baseUrl + "/" + recipeId + "/ratings";
+        String url = BASE_URL + "/" + recipeId + "/ratings";
         Rating rating = new Rating();
         rating.setValue(ratingValue);
         HttpEntity<Rating> entity = new HttpEntity<>(rating, createHeaders(true));
