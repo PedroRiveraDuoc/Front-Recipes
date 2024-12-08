@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.UUID;
 
@@ -35,4 +36,12 @@ public class GlobalExceptionHandler {
                 .contentType(MediaType.TEXT_HTML)
                 .body("<html><body><h3>Se ha producido un error inesperado.</h3></body></html>");
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleMissingResource(Exception ex, Model model) {
+        model.addAttribute("error", "Resource not found.");
+        return "error"; // Return a user-friendly error page
+    }
+
 }

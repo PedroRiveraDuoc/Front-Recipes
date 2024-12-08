@@ -27,7 +27,9 @@
       <!-- Información de la receta -->
       <div class="p-8">
         <!-- Título de la receta -->
-        <h1 class="text-center mb-16 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white" th:text="${recipe.title}">🍲 Título de la Receta
+        <h1
+          class="text-center mb-16 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+          th:text="${recipe.title}">🍲 Título de la Receta
         </h1>
         <p class="text-lg text-center text-gray-700 mb-12" th:text="${recipe.description}">Descripción de la receta</p>
 
@@ -73,124 +75,76 @@
           <!-- Botón Eliminar (con confirmación) -->
           <form th:action="@{/recipes/delete/{id}(id=${recipe.id})}" method="post"
             onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta receta?');">
-            <button type="submit"
-              class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors">
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors">
               Eliminar
             </button>
           </form>
         </div>
 
-        <!-- Separador -->
-        <div class="flex items-center mb-12 mt-20">
-          <div class="flex-grow border-t border-gray-300"></div>
-          <span class="mx-4 text-gray-500">Si te gustó, Deja tu comentario 📝</span>
-          <div class="flex-grow border-t border-gray-300"></div>
-        </div>
-
-        <!-- Formulario de comentarios -->
-        <div class="mb-6 text-center">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">💬 Agregar Comentario:</h2>
-          <input id="user-name" class="w-full p-2 mb-4 border rounded-lg" type="text"
-            placeholder="Tu nombre (opcional)" />
-          <textarea id="comment-input" class="w-full p-2 border rounded-lg mb-4"
-            placeholder="Escribe tu comentario aquí..."></textarea>
-
-          <!-- Calificación con estrellas -->
-          <div class="mb-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">⭐ Calificación:</h2>
-            <div id="rating" class="flex justify-center space-x-1">
-              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
-              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
-              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
-              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
-              <span class="star w-6 h-6 text-gray-400 cursor-pointer">&#9733;</span>
-            </div>
-          </div>
-
-          <button id="add-comment" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">Agregar
-            Comentario</button>
-        </div>
-
-        <!-- Lista de comentarios -->
-        <div id="comments-list" class="space-y-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">📃 Comentarios:</h2>
-        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Botón para volver -->
-    <div class="text-center mt-10">
-      <a href="/recipes" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700">Volver a listado de
-        recetas</a>
-    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Formulario para agregar comentarios -->
+  <div class="mt-8">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Añadir un comentario</h2>
+    <form th:action="@{/recipes/{id}/comments(id=${recipe.id})}" method="post" class="space-y-4">
+      <textarea name="content" rows="4" placeholder="Escribe tu comentario aquí..."
+        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+        Publicar comentario
+      </button>
+    </form>
+  </div>
+
+  <!-- Lista de comentarios -->
+  <div class="mt-12">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Comentarios</h2>
+    <div th:if="${recipe.comments != null}">
+      <div th:each="comment : ${recipe.comments}" class="bg-gray-50 p-4 rounded-lg shadow-md mb-4">
+          <p class="text-gray-700"><strong th:text="${comment.username}">Usuario</strong>: 
+              <span th:text="${comment.content}">Contenido del comentario</span></p>
+          <p class="text-sm text-gray-500" th:text="${comment.createdAt}">Fecha</p>
+      </div>
+  </div>
+  <div th:if="${recipe.comments == null}" class="text-gray-500">No hay comentarios todavía.</div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Botón para volver -->
+  <div class="text-center mt-10">
+    <a href="/recipes" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700">Volver a listado de
+      recetas</a>
+  </div>
   </div>
 
   <!-- Footer -->
   <div th:insert="~{fragments/footer :: footer}"></div>
-
-  <!-- JavaScript para interactividad -->
-  <script>
-    const stars = document.querySelectorAll('.star');
-    const commentInput = document.getElementById('comment-input');
-    const userNameInput = document.getElementById('user-name');
-    const addCommentButton = document.getElementById('add-comment');
-    const commentsList = document.getElementById('comments-list');
-    let selectedRating = 0;
-
-    // Manejar la calificación por estrellas
-    stars.forEach((star, index) => {
-      star.addEventListener('click', () => {
-        selectedRating = index + 1;
-        updateStarRating(selectedRating);
-      });
-    });
-
-    // Actualizar visualización de las estrellas
-    function updateStarRating(rating) {
-      stars.forEach((star, index) => {
-        star.classList.toggle('text-yellow-400', index < rating);
-        star.classList.toggle('text-gray-400', index >= rating);
-      });
-    }
-
-    // Manejar la adición de un comentario
-    addCommentButton.addEventListener('click', () => {
-      const commentText = commentInput.value.trim();
-      const userName = userNameInput.value.trim() || 'Usuario Anónimo';
-      const currentDate = new Date().toLocaleString();
-
-      if (commentText && selectedRating > 0) {
-        addComment(userName, commentText, selectedRating, currentDate);
-        commentInput.value = '';
-        userNameInput.value = '';
-        updateStarRating(0);
-        selectedRating = 0;
-      } else {
-        alert('Por favor, agrega una calificación y un comentario.');
-      }
-    });
-
-    // Función para agregar un comentario
-    function addComment(name, text, rating, date) {
-      const commentItem = document.createElement('div');
-      commentItem.classList.add('p-4', 'bg-white', 'rounded-lg', 'shadow');
-      commentItem.innerHTML = `
-        <div class="flex items-center mb-4">
-          <img class="w-10 h-10 rounded-full" src="/images/profile.png" alt="Foto de perfil">
-          <div class="ml-4">
-            <p class="font-medium text-gray-900">${name}</p>
-            <time class="block text-sm text-gray-500">${date}</time>
-          </div>
-        </div>
-        <div class="flex items-center mb-2">
-          <span class="text-yellow-400 mr-2">${'★'.repeat(rating)}</span>
-          <span class="text-gray-400">${'★'.repeat(5 - rating)}</span>
-        </div>
-        <p class="text-gray-700">${text}</p>
-      `;
-      commentsList.appendChild(commentItem);
-    }
-  </script>
 </body>
 
 </html>

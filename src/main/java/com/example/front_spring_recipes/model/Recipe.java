@@ -28,6 +28,8 @@ public class Recipe {
     @JoinColumn(name = "photo_id", referencedColumnName = "id")
     private Photo photo;
 
+    private List<Comment> comments;
+
     // Getters y setters
     public Long getId() {
         return id;
@@ -91,5 +93,16 @@ public class Recipe {
 
     public void setPhoto(Photo photo) {
         this.photo = photo;
+    }
+
+
+
+    // Getters y setters para 'comments'
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

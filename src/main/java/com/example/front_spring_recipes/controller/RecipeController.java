@@ -1,5 +1,6 @@
 package com.example.front_spring_recipes.controller;
 
+import com.example.front_spring_recipes.dto.CommentDto;
 import com.example.front_spring_recipes.model.Photo;
 import com.example.front_spring_recipes.model.Recipe;
 import com.example.front_spring_recipes.service.RecipeService;
@@ -83,4 +84,15 @@ public class RecipeController {
         redirectAttributes.addFlashAttribute("successMessage", "Receta eliminada exitosamente.");
         return "redirect:/recipes";
     }
+
+    @PostMapping("/{id}/comments")
+    public String addComment(@PathVariable Long id, @RequestParam String content,
+            RedirectAttributes redirectAttributes) {
+        CommentDto comment = new CommentDto();
+        comment.setContent(content);
+        recipeService.createCommentByRecipeId(id, comment);
+        redirectAttributes.addFlashAttribute("successMessage", "Comentario agregado exitosamente.");
+        return "redirect:/recipes/" + id;
+    }
+
 }
