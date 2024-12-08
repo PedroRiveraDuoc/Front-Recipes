@@ -1,15 +1,21 @@
 package com.example.front_spring_recipes.service;
 
-import com.example.front_spring_recipes.config.TokenStore;
-import com.example.front_spring_recipes.model.Recipe;
+import java.util.Arrays;
+import java.util.List;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
+import com.example.front_spring_recipes.config.TokenStore;
+import com.example.front_spring_recipes.dto.CommentDto;
+import com.example.front_spring_recipes.model.Recipe;
 
 @Service
 public class RecipeService {
@@ -71,5 +77,12 @@ public class RecipeService {
         String url = baseUrl + "/" + id;
         HttpEntity<String> entity = new HttpEntity<>(createHeaders(true));
         restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+    }
+
+    public CommentDto createCommentByRecipeId(Long id, CommentDto comment) {
+        String url = baseUrl + "/" + id + "/comments";
+        HttpEntity<CommentDto> entity = new HttpEntity<>(comment, createHeaders(true));
+        ResponseEntity<CommentDto> response = restTemplate.exchange(url, HttpMethod.POST, entity, CommentDto.class);
+        return response.getBody();
     }
 }
