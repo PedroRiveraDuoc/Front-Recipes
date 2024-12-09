@@ -33,6 +33,8 @@
         </h1>
         <p class="text-lg text-center text-gray-700 mb-12" th:text="${recipe.description}">Descripción de la receta</p>
 
+        <hr class="border-t border-gray-300 my-12">
+
         <!-- Ingredientes -->
         <div class="mb-8">
           <h2 class="text-2xl font-semibold text-gray-900 mb-4 text-center">Ingredientes 🥕</h2>
@@ -43,6 +45,7 @@
           </div>
         </div>
 
+        
         <!-- Instrucciones -->
         <div class="mb-8">
           <h2 class="text-2xl font-semibold text-gray-900 mb-4 text-center">Instrucciones 📜</h2>
@@ -81,79 +84,116 @@
           </form>
         </div>
 
+        <hr class="border-t border-gray-300 my-12">
 
+        <!-- Botones de Instagram, Facebook y YouTube -->
+        <div class="flex justify-center space-x-4 p-4 bg-white rounded-xl max-w-lg mx-auto">
+          <!-- Botón Instagram -->
+          <a href="https://www.instagram.com" target="_blank"
+            class="flex items-center justify-center px-3 py-3 text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:outline-none focus:ring-4 focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-xl transition-transform transform hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" viewBox="0 0 24 24">
+              <path fill="currentColor"
+                d="M 8 3 C 5.243 3 3 5.243 3 8 L 3 16 C 3 18.757 5.243 21 8 21 L 16 21 C 18.757 21 21 18.757 21 16 L 21 8 C 21 5.243 18.757 3 16 3 L 8 3 z M 8 5 L 16 5 C 17.654 5 19 6.346 19 8 L 19 16 C 19 17.654 17.654 19 16 19 L 8 19 C 6.346 19 5 17.654 5 16 L 5 8 C 5 6.346 6.346 5 8 5 z M 17 6 A 1 1 0 0 0 16 7 A 1 1 0 0 0 17 8 A 1 1 0 0 0 18 7 A 1 1 0 0 0 17 6 z M 12 7 C 9.243 7 7 9.243 7 12 C 7 14.757 9.243 17 12 17 C 14.757 17 17 14.757 17 12 C 17 9.243 14.757 7 12 7 z M 12 9 C 13.654 9 15 10.346 15 12 C 15 13.654 13.654 15 12 15 C 10.346 15 9 13.654 9 12 C 9 10.346 10.346 9 12 9 z">
+              </path>
+            </svg>
+            <span class="font-semibold">@Instagram</span>
+          </a>
 
+          <!-- Botón Facebook -->
+          <a href="https://www.facebook.com" target="_blank"
+          class="flex items-center justify-center px-3 py-3 text-white bg-gradient-to-r from-blue-500 to-blue-400 hover:bg-gradient-to-l focus:outline-none focus:ring-4 focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-xl transition-transform transform hover:scale-105">
+            <svg class="w-6 h-6 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+              <path fill="currentColor"
+                d="M279.1 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.4 0 225.4 0c-73.22 0-121.1 44.38-121.1 124.7v70.62H22.89V288h81.39v224h100.2V288z">
+              </path>
+            </svg>
+            <span class="font-semibold">@Facebook</span>
+          </a>
 
-
-
-<!-- Formulario para agregar comentarios -->
-<div class="mt-8 bg-white p-6 rounded-lg shadow-md">
-  <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b pb-2 flex items-center gap-2">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-    </svg>
-    Añadir un comentario
-  </h2>
-  <form th:action="@{/recipes/{id}/comments(id=${recipe.id})}" method="post" class="space-y-4">
-    <textarea
-      name="content"
-      rows="4"
-      placeholder="Escribe tu comentario aquí..."
-      class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none"
-      aria-label="Añadir comentario"
-    ></textarea>
-    <div class="text-right">
-      <button
-        type="submit"
-        class="bg-green-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-green-700 transition duration-300 flex items-center gap-2 justify-center"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        Publicar comentario
-      </button>
-    </div>
-  </form>
-</div>
-
-<!-- Lista de comentarios -->
-<div class="mt-12 bg-white p-6 rounded-lg shadow-md">
-  <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b pb-2 flex items-center gap-2">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V4H2v16h5m7-4h2m4 0h2m-6-6h2m4 0h2m-6-6h2m4 0h2" />
-    </svg>
-    Comentarios
-  </h2>
-  <div th:if="${recipe.comments != null}" class="space-y-4">
-    <div
-      th:each="comment : ${recipe.comments}"
-      class="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 flex items-start gap-4"
-    >
-      <!-- Icono del perfil -->
-      <div class="flex-shrink-0">
-        <div class="h-12 w-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">
-          <span th:text="${comment.username.substring(0, 1).toUpperCase()}">U</span>
+          <!-- Botón YouTube -->
+          <a href="https://www.youtube.com" target="_blank"
+          class="flex items-center justify-center px-3 py-3 text-white bg-gradient-to-r from-red-500 to-red-400 hover:bg-gradient-to-l focus:outline-none focus:ring-4 focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-xl transition-transform transform hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" viewBox="0 0 72 72">
+              <path fill="currentColor"
+                d="M61.115,18.856C63.666,21.503,64,25.709,64,36s-0.334,14.497-2.885,17.144C58.563,55.791,55.906,56,36,56	s-22.563-0.209-25.115-2.856C8.334,50.497,8,46.291,8,36s0.334-14.497,2.885-17.144S16.094,16,36,16S58.563,16.209,61.115,18.856z M31.464,44.476l13.603-8.044l-13.603-7.918V44.476z">
+              </path>
+            </svg>
+            <span class="font-semibold">@YouTube</span>
+          </a>
         </div>
-      </div>
-      <!-- Contenido del comentario -->
-      <div>
-        <p class="text-gray-900 font-medium flex items-center gap-2">
-          <span th:text="${comment.username}">Usuario</span>
-        </p>
-        <p class="text-gray-700 mt-2" th:text="${comment.content}">Contenido del comentario</p>
-        <p class="text-sm text-gray-500 mt-2 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-8 4h4m-4 4h8M5 7v10m14-10v10" />
-          </svg>
-          Publicado el: <span th:text="${comment.createdAt}">Fecha</span>
-        </p>
-      </div>
-    </div>
-  </div>
-  <div th:if="${recipe.comments == null}" class="text-gray-500 text-center py-4">
-    No hay comentarios todavía.
-  </div>
-</div>
+
+
+
+        <hr class="border-t border-gray-300 my-12">
+
+
+
+        <!-- Formulario para agregar comentarios -->
+        <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b pb-2 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Añadir un comentario
+          </h2>
+          <form th:action="@{/recipes/{id}/comments(id=${recipe.id})}" method="post" class="space-y-4">
+            <textarea name="content" rows="4" placeholder="Escribe tu comentario aquí..."
+              class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none"
+              aria-label="Añadir comentario"></textarea>
+            <div class="text-right">
+              <button type="submit"
+                class="bg-green-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-green-700 transition duration-300 flex items-center gap-2 justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Publicar comentario
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Lista de comentarios -->
+        <div class="mt-12 bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4 border-b pb-2 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5V4H2v16h5m7-4h2m4 0h2m-6-6h2m4 0h2m-6-6h2m4 0h2" />
+            </svg>
+            Comentarios
+          </h2>
+          <div th:if="${recipe.comments != null}" class="space-y-4">
+            <div th:each="comment : ${recipe.comments}"
+              class="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 flex items-start gap-4">
+              <!-- Icono del perfil -->
+              <div class="flex-shrink-0">
+                <div class="h-12 w-12 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">
+                  <span th:text="${comment.username.substring(0, 1).toUpperCase()}">U</span>
+                </div>
+              </div>
+              <!-- Contenido del comentario -->
+              <div>
+                <p class="text-gray-900 font-medium flex items-center gap-2">
+                  <span th:text="${comment.username}">Usuario</span>
+                </p>
+                <p class="text-gray-700 mt-2" th:text="${comment.content}">Contenido del comentario</p>
+                <p class="text-sm text-gray-500 mt-2 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 7h8m-8 4h4m-4 4h8M5 7v10m14-10v10" />
+                  </svg>
+                  Publicado el: <span th:text="${comment.createdAt}">Fecha</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div th:if="${recipe.comments == null}" class="text-gray-500 text-center py-4">
+            No hay comentarios todavía.
+          </div>
+        </div>
 
 
 
