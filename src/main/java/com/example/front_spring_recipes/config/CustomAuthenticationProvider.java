@@ -22,49 +22,49 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-  private TokenStore tokenStore;
+    private final TokenStore tokenStore;
+    private final RestTemplate restTemplate;
 
-  public CustomAuthenticationProvider(TokenStore tokenStore) {
-    super();
-    this.tokenStore = tokenStore;
-  }
-
-  @Override
-  public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
-    final String name = authentication.getName();
-    final String password = authentication.getCredentials().toString();
-
-    // Crear el cuerpo de la solicitud como JSON
-    JSONObject requestBody = new JSONObject();
-    requestBody.put("username", name);
-    requestBody.put("password", password);
-
-    // Configurar encabezados para JSON
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-
-    // Crear HttpEntity con el JSON como String
-    HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
-
-    // Realizar la solicitud
-    final var restTemplate = new RestTemplate();
-    final var responseEntity = restTemplate.postForEntity("http://localhost:8081/api/auth/login", entity,
-        String.class);
-
-    if (responseEntity.getStatusCode() != HttpStatus.OK) {
-      throw new BadCredentialsException("Invalid username or password");
+    public CustomAuthenticationProvider(TokenStore tokenStore, RestTemplate restTemplate) {
+        this.tokenStore = tokenStore;
+        this.restTemplate = restTemplate;
     }
 
-    tokenStore.setToken(responseEntity.getBody());
+    @Override
+    public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
+        final String name = authentication.getName();
+        final String password = authentication.getCredentials().toString();
 
-    List<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        try {
+            JSONObject requestBody = new JSONObject();
+            requestBody.put("username", name);
+            requestBody.put("password", password);
 
-    return new UsernamePasswordAuthenticationToken(name, password, authorities);
-  }
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-  @Override
-  public boolean supports(Class<?> authentication) {
-    return authentication.equals(UsernamePasswordAuthenticationToken.class);
-  }
+            HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
+
+            final var responseEntity = restTemplate.postForEntity("http://localhost:8081/api/auth/login", entity,
+                    String.class);
+
+            if (responseEntity.getStatusCode() != HttpStatus.OK || responseEntity.getBody() == null) {
+                throw new BadCredentialsException("Invalid username or password");
+            }
+
+            tokenStore.setToken(responseEntity.getBody());
+
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+            return new UsernamePasswordAuthenticationToken(name, password, authorities);
+        } catch (Exception ex) {
+            throw new BadCredentialsException("Authentication failed due to an error.", ex);
+        }
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+    }
 }

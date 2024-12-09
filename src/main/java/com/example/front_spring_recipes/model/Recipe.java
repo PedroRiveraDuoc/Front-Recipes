@@ -27,7 +27,7 @@ public class Recipe {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "photo_id", referencedColumnName = "id")
-    private Photo photo;
+    private Photo photo = new Photo(); 
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -98,6 +98,11 @@ public class Recipe {
 
     public void setPhoto(Photo photo) {
         this.photo = photo;
+    }
+
+    public Recipe() {
+        // Constructor por defecto
+        this.photo = new Photo(); // Asegurarse de inicializar photo
     }
 
     public List<Comment> getComments() {
