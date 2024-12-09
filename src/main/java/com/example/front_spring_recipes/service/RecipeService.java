@@ -21,14 +21,14 @@ import com.example.front_spring_recipes.model.Recipe;
 public class RecipeService {
 
     private final TokenStore tokenStore;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
-    // Cambiar "final" a "static final" para indicar que es una constante de clase.
     private static final String BASE_URL = "http://localhost:8081/api/recipes";
 
     // Inyección por constructor
-    public RecipeService(TokenStore tokenStore) {
+    public RecipeService(TokenStore tokenStore, RestTemplate restTemplate) {
         this.tokenStore = tokenStore;
+        this.restTemplate = restTemplate;
     }
 
     public HttpHeaders createHeaders(boolean requireAuth) {
@@ -50,7 +50,12 @@ public class RecipeService {
     // Métodos existentes que ahora usan BASE_URL en lugar de baseUrl
     public List<Recipe> getRecipes() {
         HttpEntity<String> entity = new HttpEntity<>(createHeaders(false));
-        ResponseEntity<Recipe[]> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, entity, Recipe[].class);
+        ResponseEntity<Recipe[]> response = restTemplate.exchange(
+                BASE_URL,
+                HttpMethod.GET,
+                entity,
+                Recipe[].class
+        );
         return Arrays.asList(response.getBody());
     }
 
@@ -77,7 +82,13 @@ public class RecipeService {
     public void deleteRecipe(Long id) {
         String url = BASE_URL + "/" + id;
         HttpEntity<String> entity = new HttpEntity<>(createHeaders(true));
-        restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+        try {
+            ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+            System.out.println("Response Status Code: " + response.getStatusCode());
+        } catch (Exception e) {
+            System.err.println("Error during DELETE: " + e.getMessage());
+            throw e;
+        }
     }
 
     public CommentDto createCommentByRecipeId(Long id, CommentDto comment) {
